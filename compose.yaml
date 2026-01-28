@@ -1,0 +1,6 @@
+﻿services:
+  handwritenrecognition:
+    image: handwritenrecognition
+    build:
+      context: .
+      dockerfile: HandwritenRecognition/Dockerfile
