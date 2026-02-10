@@ -1,9 +1,16 @@
+using HandwritenRecognition.Cross.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient<IRetryingHttpClient,RetryingHttpClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["OcrAPISettings:BaseAddress"] ?? string.Empty);
+    client.Timeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("OcrAPISettings:Timeout"));
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

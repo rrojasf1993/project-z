@@ -1,5 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from modelscope.server.api.routers import router
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from Services.OcrService import OcrService
 import time
 import shutil
@@ -7,11 +6,13 @@ import os
 import uuid
 
 routerInstance = APIRouter()
-uploadDir_Path="uploads"
+uploadDir_Path = "uploads"
 os.makedirs(uploadDir_Path, exist_ok=True)
 
-@router.post("/process")
-async def process_Document(file: UploadFile = File(...), _ocrService:OcrService = Depends()):
+# Instancia del servicio
+_ocrServiceInstance = OcrService()
+@routerInstance.post("/api/process")
+async def process_Document(file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Only image files are allowed")
 
@@ -20,18 +21,22 @@ async def process_Document(file: UploadFile = File(...), _ocrService:OcrService 
 
     start_time = time.time()
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
     try:
-        ocr_result = _ocrService.extractText(file_path)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        ocr_result = _ocrServiceInstance.extractText(file_path)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error procesando imagen: {str(e)}")
+    finally:
+
+        os.remove(file_path)
+        pass
 
     processing_time = round(time.time() - start_time, 2)
 
     return {
         "fileId": file_id,
         "result": ocr_result,
-        "processingTime": processing_time
+        "processingTime": f"{processing_time}s"
     }
