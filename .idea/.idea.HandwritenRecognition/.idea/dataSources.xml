@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="master@localhost" uuid="48d19b94-6b00-4b65-bb47-2293fc86b59e">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=localhost\MSSQLSERVER_2022;Database=master</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="ocr_Db@localhost" uuid="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6">
+      <driver-ref>sqlserver.jb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.jetbrains.jdbc.sqlserver.SqlServerDriver</jdbc-driver>
+      <jdbc-url>Server=localhost\MSSQLSERVER_2022;Database=ocr_Db</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>

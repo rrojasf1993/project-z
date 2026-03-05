@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition", "HandwritenRecognition\HandwritenRecognition.csproj", "{D700033C-6C04-40D9-83AF-8B89B5758176}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0247BF52-3631-4837-B4EC-3FAB5354888E}"
 	ProjectSection(SolutionItems) = preProject
 		compose.yaml = compose.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition.Cross", "HandwritenRecognition.Cross\HandwritenRecognition.Cross.csproj", "{F8E34626-5CEF-4928-9D8B-DC8DE55E9397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition.Data", "HandwritenRecognition.Data\HandwritenRecognition.Data.csproj", "{B9AEB95B-1DC5-4AE2-944D-AC4F5CE4AEEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition.Services", "HandwritenRecognition.Services\HandwritenRecognition.Services.csproj", "{1B94C8F0-E170-42C5-9DB3-8CD8C7B3504F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition.API", "HandwritenRecognition.API\HandwritenRecognition.API.csproj", "{C828CA56-7C9D-4D54-B434-4C7AAD5936EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritenRecognition.Domain", "HandwritenRecognition.Domain\HandwritenRecognition.Domain.csproj", "{6B7B4135-4B50-4739-9347-AD2C5885CDF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,9 +21,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D700033C-6C04-40D9-83AF-8B89B5758176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D700033C-6C04-40D9-83AF-8B89B5758176}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D700033C-6C04-40D9-83AF-8B89B5758176}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D700033C-6C04-40D9-83AF-8B89B5758176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8E34626-5CEF-4928-9D8B-DC8DE55E9397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8E34626-5CEF-4928-9D8B-DC8DE55E9397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8E34626-5CEF-4928-9D8B-DC8DE55E9397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8E34626-5CEF-4928-9D8B-DC8DE55E9397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9AEB95B-1DC5-4AE2-944D-AC4F5CE4AEEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9AEB95B-1DC5-4AE2-944D-AC4F5CE4AEEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9AEB95B-1DC5-4AE2-944D-AC4F5CE4AEEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9AEB95B-1DC5-4AE2-944D-AC4F5CE4AEEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B94C8F0-E170-42C5-9DB3-8CD8C7B3504F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B94C8F0-E170-42C5-9DB3-8CD8C7B3504F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B94C8F0-E170-42C5-9DB3-8CD8C7B3504F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B94C8F0-E170-42C5-9DB3-8CD8C7B3504F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C828CA56-7C9D-4D54-B434-4C7AAD5936EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C828CA56-7C9D-4D54-B434-4C7AAD5936EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C828CA56-7C9D-4D54-B434-4C7AAD5936EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C828CA56-7C9D-4D54-B434-4C7AAD5936EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7B4135-4B50-4739-9347-AD2C5885CDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7B4135-4B50-4739-9347-AD2C5885CDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7B4135-4B50-4739-9347-AD2C5885CDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7B4135-4B50-4739-9347-AD2C5885CDF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
