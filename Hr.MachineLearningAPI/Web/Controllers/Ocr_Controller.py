@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, FastAPI
 from Models.OcrResult import OcrResult
+=======
+from fastapi import APIRouter, UploadFile, File, HTTPException
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
 from Services.OcrService import OcrService
 from Models.InputFile import InputFile
 import shutil
@@ -23,9 +27,16 @@ async def process_Document(file: UploadFile = File(...) , _ocrService=Depends(ge
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     try:
-        ocr_result = _ocrService.extractText(file_path)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        ocr_result = _ocrServiceInstance.extractText(file_path)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error procesando imagen: {str(e)}")
+    finally:
+
+        os.remove(file_path)
+        pass
 
     return ocr_result
 

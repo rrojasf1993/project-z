@@ -34,4 +34,4 @@ RUN python -c "from paddleocr import PaddleOCR; PaddleOCR(use_angle_cls=True, la
 EXPOSE 8035
 
 # 9 Comando de arranque
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "Main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -117,7 +117,11 @@ class OcrService:
         )
         return thresh
 
+<<<<<<< HEAD
     def preProcessImg(self, path: str) -> (str,ImageInfo,str):
+=======
+    def preProcessImg(self, path: str) -> (str,ImageInfo):
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
         img = cv2.imread(path)
         tmpPath = ""
         imageProfile="default"
@@ -144,7 +148,11 @@ class OcrService:
             if bad:
                 imageProfile="aggresive"
                 grayScaleImg = self.aggresivePreprocessing(grayScaleImg)
+<<<<<<< HEAD
                 #self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale with aggresive fixes")
+=======
+                self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale with aggresive fixes")
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
             #clahe
             claheInstance=cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
             grayScaleImg=claheInstance.apply(grayScaleImg)
@@ -161,7 +169,11 @@ class OcrService:
             cv2.imwrite(tmpPath, adjusted)
         except RuntimeError as errData:
             logging.error(errData)
+<<<<<<< HEAD
         return tmpPath,imageInfoInstance,imageProfile
+=======
+        return tmpPath,imageInfoInstance
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
 
     def get_confidence_status(self, confidence: float) -> str:
         if confidence < 0.6:
@@ -173,8 +185,12 @@ class OcrService:
     def parseRawOcrData(self,
                         rawOcrData,
                         processTime,
+<<<<<<< HEAD
                         imgProcessInfo:ImageInfo,
                         imageProcessProfile)->OcrResult:
+=======
+                        imgProcessInfo:ImageInfo)->OcrResult:
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
         #lines = []
         confidences = []
         dt_polys=None
@@ -202,6 +218,7 @@ class OcrService:
             confidences.append(confidence)
         avgConfidence=sum(confidences) / len(confidences) if confidences else 0.0
         avgConfidenceScore = self.get_confidence_status(avgConfidence)
+<<<<<<< HEAD
         result.qualityInfo.append(QualityInfo(level=avgConfidenceScore, blurLevel=0, avgConfidence=avgConfidence))
         result.imageInfo.append(imgProcessInfo)
         result.processData.append(ImagePreProcess(imageProfile=imageProcessProfile, processingTime=processTime))
@@ -209,11 +226,30 @@ class OcrService:
 
     def extractText(self, path: str) -> OcrResult:
         preProcessedImgDataPath,imgPreProcessData,imageProcessProfile = self.preProcessImg(path)
+=======
+        result.qualityInfo=QualityInfo(level=avgConfidenceScore, blurLevel=0)
+        result.imageInfo=imgProcessInfo
+        result.processData=ImagePreProcess()
+        result.processData.imageProfile=""
+        result.processData.processingTime=processTime
+        return result
+
+    def extractText(self, path: str) -> OcrResult:
+        preProcessedImgDataPath,imgPreProcessData = self.preProcessImg(path)
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
         start = time.time()
         rawOcrData = self._OcrInstance.ocr(preProcessedImgDataPath)
         if not rawOcrData or not rawOcrData[0]:
             logging.info("El OCR No pùdo detectar texto")
             return None
+<<<<<<< HEAD
         parsedOcrData = self.parseRawOcrData(rawOcrData,(time.time() - start),imgPreProcessData,imageProcessProfile)
         print(parsedOcrData)
+=======
+        parsedOcrData = self.parseRawOcrData(rawOcrData,(time.time() - start),imgPreProcessData)
+        try:
+            os.remove(path)
+        except Exception as exc:
+            logging.error(exc)
+>>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
         return parsedOcrData

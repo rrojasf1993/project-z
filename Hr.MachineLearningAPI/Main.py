@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 import uvicorn
-
 from Web.Controllers.Ocr_Controller import routerInstance
 
 app = FastAPI(
