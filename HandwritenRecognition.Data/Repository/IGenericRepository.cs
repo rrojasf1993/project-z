@@ -1,10 +1,7 @@
-<<<<<<< HEAD
+
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-
-=======
->>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
 namespace HandwritenRecognition.Data.Repository;
 
 public interface IGenericRepository<T> where T : class

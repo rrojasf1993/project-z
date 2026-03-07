@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-//using Microsoft.Extensions.Logging;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace HandwritenRecognition.Cross.Infrastructure;
@@ -78,64 +77,6 @@ public class RetryingHttpClient : IRetryingHttpClient
             return default;
         }
     }
-
-    public async Task<TResponse?> PostMultipartFormDataAsync<TRequest, TResponse>(string uri, Stream data,
-        string filename, Dictionary<string, string>? headers)
-    {
-        var stopwatch = Stopwatch.StartNew();
-        //_loggerInstance.LogInformation("Solicitud iniciada a {uri} con método Post", uri);
-
-        try
-        {
-           // var json = JsonSerializer.Serialize(data);
-            // _loggerInstance.LogInformation($"Payload de entrada: {json}");
-
-            var content = new MultipartFormDataContent();
-            content.Add(new StreamContent(data), "file", filename);
-
-            if (headers != null)
-                //_loggerInstance.LogInformation("Headers de la entrada:");
-                foreach (var header in headers)
-                    //_loggerInstance.LogInformation($"{header.Key}: {header.Value}");
-                    _httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
-
-            var response = await _httpClient.PostAsync(uri, content);
-            stopwatch.Stop();
-
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            //_loggerInstance.LogInformation($"Petición terminada: {uri} en {stopwatch.ElapsedMilliseconds} ms");
-            //_loggerInstance.LogInformation(
-<<<<<<< HEAD
-            //$"Respuesta: {response.StatusCode} - {response.ReasonPhrase}\nContenido: {responseContent}\nEncabezados: {response.Headers}\nDatos de entrada: {json}";
-
-            if (!response.IsSuccessStatusCode)
-                /* _loggerInstance.LogError(
-                    $"Error haciendo petición a: {uri}\nCódigo de error: {response.StatusCode}\nRazón: {response.ReasonPhrase}");*/
-                return default;
-
-            return JsonSerializer.Deserialize<TResponse>(responseContent,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-=======
-             //   $"Respuesta: {response.StatusCode} - {response.ReasonPhrase}\nContenido: {responseContent}\nEncabezados: {response.Headers}\nDatos de entrada: {json}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-               // _loggerInstance.LogError(
-                 //   $"Error haciendo petición a: {uri}\nCódigo de error: {response.StatusCode}\nRazón: {response.ReasonPhrase}");
-                return default;
-            }
-
-            return JsonSerializer.Deserialize<TResponse>(responseContent,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true,  });
-        }
-        catch (Exception ex)
-        {
-            stopwatch.Stop();
-            //_loggerInstance.LogError(ex, $"Excepción al hacer POST a {uri} después de {stopwatch.ElapsedMilliseconds} ms");
-            return default;
-        }
-    }
     
     public async Task<TResponse?> PostMultipartFormDataAsync<TRequest, TResponse>(string uri, Stream data, string filename,  Dictionary<string, string>? headers)
     {
@@ -178,7 +119,6 @@ public class RetryingHttpClient : IRetryingHttpClient
 
             return JsonSerializer.Deserialize<TResponse>(responseContent,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true,  });
->>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
         }
         catch (Exception ex)
         {
@@ -187,8 +127,4 @@ public class RetryingHttpClient : IRetryingHttpClient
             return default;
         }
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> 0fdab17697fc8c270d7acb38f3e90a7aa88b71af
 }
