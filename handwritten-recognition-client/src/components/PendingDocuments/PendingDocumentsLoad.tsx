@@ -61,6 +61,7 @@ const PendingDocumentsLoad = (props: PendingDocumentListProps) =>
   const [startDate, setStartDate] = useState<moment.Moment | null>(moment());
   const [endDate, setEndDate] = useState<moment.Moment | null>(moment());
 
+const PendingDocumentsLoad = (props:PendingDocumentListProps) => {
   return (
     <>
       <Grid container spacing={2}>

@@ -20,8 +20,11 @@ async def process_Document(file: UploadFile = File(...) , _ocrService=Depends(ge
     file_id = str(uuid.uuid4())
     file_path = os.path.join(uploadDir_Path, f"{file_id}_{file.filename}")
 
+    start_time = time.time()
+
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
     try:
         ocr_result = _ocrService.extractText(file_path)
     except Exception as e:

@@ -99,12 +99,6 @@ class OcrService:
         }
 
 
-    def resizeImage(self, grayScaleImg, maxSize=1600):
-        height,width=grayScaleImg.shape[:2]
-        scale=max(height, width)/maxSize
-        if scale>1:
-            grayScaleImg=cv2.resize(grayScaleImg,(int(width/scale),int(height/scale)),interpolation=cv2.INTER_AREA)
-        return grayScaleImg
 
     def aggresivePreprocessing(self, grayScaleImgInstance):
 
@@ -199,6 +193,15 @@ class OcrService:
                                         lineId=i
                                         ))
             confidence = float(rec_scores[i])
+
+            lines.append({
+                "lineId": i,
+                "text": rec_texts[i],
+                "confidence": confidence,
+                "status": self.get_confidence_status(confidence),
+                "boundingBox": dt_polys[i]
+            })
+
             confidences.append(confidence)
         avgConfidence=sum(confidences) / len(confidences) if confidences else 0.0
         avgConfidenceScore = self.get_confidence_status(avgConfidence)
