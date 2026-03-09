@@ -1,3 +1,5 @@
+import type { ImageItem } from "./ImageItem";
+
 export interface IImageUploadProps {
-  onUploadComplete: (imageUrl: string, file: File) => void;
+  onUploadComplete: (fileItemsToUploadToServer: ImageItem[]) => void;
 }

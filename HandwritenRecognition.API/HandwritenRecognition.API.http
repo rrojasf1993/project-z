@@ -1,0 +1,7 @@
+@HostAddress = http://localhost:5026
+//@fileToUpload=rea
+
+GET {{HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -4,3 +4,15 @@
     build:
       context: .
       dockerfile: HandwritenRecognition/Dockerfile
+
+  handwritenrecognition.api:
+    image: handwritenrecognition.api
+    build:
+      context: .
+      dockerfile: HandwritenRecognition.API/Dockerfile
+
+  handwritenrecognition.bgservices:
+    image: handwritenrecognition.bgservices
+    build:
+      context: .
+      dockerfile: HandwritenRecognition.BgServices/Dockerfile

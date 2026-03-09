@@ -1,4 +1,4 @@
-export interface ImageItem {
+export type ImageItem ={
   file: File;
   previewUrl: string;
   selected: boolean;

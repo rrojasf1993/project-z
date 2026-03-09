@@ -1,8 +1,7 @@
-import type React from "react";
+import React from "react";
 import type { IImageUploadProps } from "../../model/props/IImageUploadProps";
 import { useState, type ChangeEvent } from "react";
 import type { ImageItem } from "../../model/props/ImageItem";
-import imageIcon from "./ImageIcon.png";
 import ImagePreviewer from "../ImagePreview/ImagePreviewer";
 import {
   AppBar,
@@ -14,7 +13,6 @@ import {
   CardContent,
   CardMedia,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControlLabel,
@@ -27,15 +25,13 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
+import { Image } from "@mui/icons-material";
 const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
-  /* const useStyles = makeStyles({
-
-  });*/
-  //const classes = useStyles();
   const [previewData, setPreviewData] = useState<ImageItem[]>([]);
   const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
   const [selectedImageItemForPreview, setShowSelectedImageItemForPreview] =
     useState<ImageItem>({} as ImageItem);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
 
   const handleFileChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     const uploadedFiles = Array.from(evt.target.files || []);
@@ -45,6 +41,7 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
       selected: false,
     }));
     const images = [...previewData, ...newImages];
+    setSelectedFileName(evt.target.value);
     setPreviewData(images);
   };
 
@@ -53,7 +50,7 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
       return i.selected;
     });
     console.log("Uploading ", fileItemsToUploadToServer);
-    //onUploadComplete()
+    onUploadComplete(fileItemsToUploadToServer);
   };
 
   const handlePreview = (item: ImageItem): void => {
@@ -82,7 +79,8 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
     setPreviewData(updatedPreviewData);
   };
 
-  const areAllSelected = previewData.length > 0 && previewData.every((item) => item.selected);
+  const areAllSelected =
+    previewData.length > 0 && previewData.every((item) => item.selected);
 
   const handleSelectItem = (selectedItem: ImageItem): void => {
     const index = previewData.findIndex((pd) => pd === selectedItem);
@@ -96,21 +94,30 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
     }
   };
 
+  const getGridSizeForCardContainer = (arraySize: number): number => {
+    const maxSize: number = 12; //Col-md-12
+    const definedSize = maxSize / arraySize;
+    return definedSize;
+  };
+
   const renderImgsDiv = () => {
     let element = null;
-    const arrays = splitArray(previewData, 3);
+    const arrays = splitArray(previewData, 4);
     element = (
       <>
         {arrays.map((element, index) => {
           return (
-            <Grid key={index} container spacing={3}>
+            <Grid key={index} container size={12} spacing={3}>
               {element.map((subElement, index) => {
                 return (
-                  <Grid key={index} size={element.length}>
+                  <Grid
+                    key={index}
+                    size={getGridSizeForCardContainer(element.length)}
+                  >
                     <Card variant="outlined">
                       <CardContent>
+                        <Image />
                         <Typography variant="h6">
-                          <img src={imageIcon} alt="icon" />
                           <b>{subElement.file.name}</b>
                         </Typography>
                       </CardContent>
@@ -154,33 +161,33 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
     <>
       <Grid container spacing={2}>
         <Grid size={12}>
-          <Paper>
-            <Typography variant="h3" gutterBottom>
-              Suba la(s) imagen(es) de la(s) multa(s)
-            </Typography>
-          </Paper>
-          <Paper>
-            <label htmlFor="imageUpload">Adjunte las imagenes: </label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple={true}
-              placeholder="Archivos a cargar"
-              id="imageUpload"
-              onChange={handleFileChange}
-            />
-          </Paper>
+          <p>Suba la(s) imagen(es) de lo(s) documento(s)</p>
+          <label htmlFor="imageUpload">Adjunte las imagenes: </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple={true}
+            placeholder="Archivos a cargar"
+            id="imageUpload"
+            value={selectedFileName}
+            onChange={handleFileChange}
+          />
         </Grid>
         <Grid size={12}>
-          <Paper>
-            <FormControlLabel
-              control={<Switch color="warning" onClick={() => handleSelectAll()} checked={areAllSelected} />}
-              label="Seleccionar todos"
-            />
-          </Paper>
+          <FormControlLabel
+            control={
+              <Switch
+                color="warning"
+                onClick={() => handleSelectAll()}
+                checked={areAllSelected}
+              />
+            }
+            label="Seleccionar todos"
+          />
         </Grid>
-        <hr></hr>
-        <div>{renderImgsDiv()}</div>
+        <Paper elevation={2}>
+          <div>{renderImgsDiv()}</div>
+        </Paper>
         <Dialog fullScreen maxWidth="lg" open={showPreviewModal}>
           <DialogTitle>
             <AppBar>
@@ -212,18 +219,29 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
             </Box>
           </DialogContent>
         </Dialog>
-        <hr></hr>
-        <Grid container>
-          <Grid size={12} spacing={2}>
-            <Paper>
-              <Button color="primary" variant="contained">
-                Cargar seleccionadas
-              </Button>
-              <Button variant="outlined" color="warning">
-                Reiniciar
-              </Button>
-            </Paper>
-          </Grid>
+      </Grid>
+      <Grid container>
+        <Grid size={6}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => handleUpload()}
+            content="Cargar Seleccionados"
+          >
+            Cargar seleccionadas
+          </Button>
+        </Grid>
+        <Grid size={6}>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => {
+              setPreviewData([] as ImageItem[]);
+              setSelectedFileName("");
+            }}
+          >
+            Reiniciar
+          </Button>
         </Grid>
       </Grid>
     </>

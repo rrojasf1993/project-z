@@ -1,37 +1,41 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from modelscope.server.api.routers import router
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, FastAPI
+from Models.OcrResult import OcrResult
 from Services.OcrService import OcrService
-import time
+from Models.InputFile import InputFile
 import shutil
 import os
 import uuid
-
+_ocrServiceInstance = OcrService()
 routerInstance = APIRouter()
-uploadDir_Path="uploads"
+uploadDir_Path = "uploads"
 os.makedirs(uploadDir_Path, exist_ok=True)
 
-@router.post("/process")
-async def process_Document(file: UploadFile = File(...), _ocrService:OcrService = Depends()):
-    if not file.content_type.startswith("image/"):
+def get_OcrService():
+    return _ocrServiceInstance
+@routerInstance.post("/process")
+async def process_Document(file: UploadFile = File(...) , _ocrService=Depends(get_OcrService))->OcrResult:
+    if not (file.filename.endswith("jpg") or file.filename.endswith("jpeg") or file.filename.endswith("png")):
         raise HTTPException(status_code=400, detail="Only image files are allowed")
 
     file_id = str(uuid.uuid4())
     file_path = os.path.join(uploadDir_Path, f"{file_id}_{file.filename}")
 
-    start_time = time.time()
-
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-
     try:
         ocr_result = _ocrService.extractText(file_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    processing_time = round(time.time() - start_time, 2)
+    return ocr_result
 
-    return {
-        "fileId": file_id,
-        "result": ocr_result,
-        "processingTime": processing_time
-    }
+@routerInstance.post("/processv2")
+async def processv2(inputFileData:InputFile, _ocrService=Depends(get_OcrService))->OcrResult:
+    if not os.path.exists(inputFileData.path):
+        raise HTTPException(status_code=400, detail="The file doesn't exist")
+    try:
+        ocr_result = _ocrService.extractText(inputFileData.path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return ocr_result
+
