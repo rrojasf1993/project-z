@@ -74,7 +74,7 @@ public class RetryingHttpClient : IRetryingHttpClient
         {
             stopwatch.Stop();
             _loggerInstance.LogError(ex, $"Exception posting to {uri} after {stopwatch.ElapsedMilliseconds} ms");
-            return default;
+            throw;
         }
     }
 

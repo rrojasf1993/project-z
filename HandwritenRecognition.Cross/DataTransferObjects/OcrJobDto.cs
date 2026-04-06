@@ -7,4 +7,6 @@ public class OcrJobDto
     public OcrResultDto? Result { get; set; }
     public string? Error { get; set; }
     public  string FileName { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

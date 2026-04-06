@@ -11,4 +11,5 @@ public class OcrDocument
     public float ConfidenceAvg { get; set; }
     public ICollection<OcrLine> Lines { get; set; }
     public OcrDocumentStatus_ Status { get; set; } = OcrDocumentStatus_.PendingReview;
+    public DateTime? UpdatedAt { get; set; }
 }

@@ -51,6 +51,10 @@ public class UnitOfWork(OcrDbContext context) : IUnitOfWork, IDisposable
     [field: MaybeNull]
     public IGenericRepository<ImageInfo> ImageInfo => field ??= new HandwritenRecognitionRepository<ImageInfo>(context);
 
+    [field: AllowNull]
+    [field: MaybeNull]
+    public IGenericRepository<OcrBoundingBox> BoundingBoxes=> field ??= new HandwritenRecognitionRepository<OcrBoundingBox>(context);
+
 
     public Task<int> SaveChangesAsync()
     {

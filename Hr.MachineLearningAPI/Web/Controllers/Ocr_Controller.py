@@ -1,44 +1,33 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, FastAPI
-from Models.OcrResult import OcrResult
-from Services.OcrService import OcrService
-from Models.InputFile import InputFile
-import shutil
+from fastapi import APIRouter, Depends, HTTPException
 import os
-import uuid
-_ocrServiceInstance = OcrService()
+import gc
+from Models.InputFile import InputFile
 routerInstance = APIRouter()
-uploadDir_Path = "uploads"
-os.makedirs(uploadDir_Path, exist_ok=True)
 
-def get_OcrService():
-    return _ocrServiceInstance
-@routerInstance.post("/process")
-async def process_Document(file: UploadFile = File(...) , _ocrService=Depends(get_OcrService))->OcrResult:
-    if not (file.filename.endswith("jpg") or file.filename.endswith("jpeg") or file.filename.endswith("png")):
-        raise HTTPException(status_code=400, detail="Only image files are allowed")
 
-    file_id = str(uuid.uuid4())
-    file_path = os.path.join(uploadDir_Path, f"{file_id}_{file.filename}")
+# Usar una función que devuelva la instancia solo cuando se pida
+# O mejor aún, dentro de un Singleton que cargue el modelo on-demand
+def get_ocr_service():
+    from Services.OcrService import OcrService  # Import local para evitar carga inicial
+    return OcrService()
 
-    start_time = time.time()
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    try:
-        ocr_result = _ocrService.extractText(file_path)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    return ocr_result
 
 @routerInstance.post("/processv2")
-async def processv2(inputFileData:InputFile, _ocrService=Depends(get_OcrService))->OcrResult:
+async def processv2(inputFileData: InputFile, _ocr_service=Depends(get_ocr_service)):
     if not os.path.exists(inputFileData.path):
         raise HTTPException(status_code=400, detail="The file doesn't exist")
     try:
-        ocr_result = _ocrService.extractText(inputFileData.path)
+        # Procesar el archivo
+        ocr_result=_ocr_service.extractText(inputFileData.path)
+        print(ocr_result)
+        # Sugerencia: Eliminar el archivo una vez procesado para liberar recursos del SO
+        # os.remove(inputFileData.path)
+
+        return ocr_result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return ocr_result
-
+    finally:
+        # Forzar la recolección de basura si el objeto de resultado es muy grande
+        # o si el servicio dejó residuos en memoria.
+        del _ocr_service
+        gc.collect()

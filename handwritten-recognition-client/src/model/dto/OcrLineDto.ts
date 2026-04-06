@@ -1,7 +1,12 @@
+import type { BoundingBox } from "./BoundingBoxDto";
+
 export type OcrLineDto={
     lineId:number,
-    text:string,
-    confidence:number,
-    status:string,
+    originalText:string,
+    correctedText:string|null,
+    confidenceScore:number,
+    confidenceStatus:string,
     boundingBox:Array<Array<number>>
+    lineIndex:number;
+    frontendFriendlyBoxes:Array<BoundingBox>
 }

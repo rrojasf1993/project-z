@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import type { IImageUploadProps } from "../../model/props/IImageUploadProps";
-import { useState, type ChangeEvent } from "react";
 import type { ImageItem } from "../../model/props/ImageItem";
 import ImagePreviewer from "../ImagePreview/ImagePreviewer";
 import {
@@ -25,37 +24,56 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Image } from "@mui/icons-material";
-const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
-  const [previewData, setPreviewData] = useState<ImageItem[]>([]);
-  const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
-  const [selectedImageItemForPreview, setShowSelectedImageItemForPreview] =
-    useState<ImageItem>({} as ImageItem);
-  const [selectedFileName, setSelectedFileName] = useState<string>("");
+import { useDropzone } from "react-dropzone";
+import "@pqina/pintura/pintura.css";
+import { getEditorDefaults } from "@pqina/pintura";
+import type { PinturaDefaultImageWriterResult } from "@pqina/pintura";
+import { PinturaEditor } from "@pqina/react-pintura";
+import { useImageUploadStore } from "../../store/ImageUploadStore";
 
-  const handleFileChange = (evt: ChangeEvent<HTMLInputElement>): void => {
-    const uploadedFiles = Array.from(evt.target.files || []);
-    const newImages = uploadedFiles.map((file) => ({
-      file,
-      previewUrl: URL.createObjectURL(file),
-      selected: false,
-    }));
-    const images = [...previewData, ...newImages];
-    setSelectedFileName(evt.target.value);
-    setPreviewData(images);
-  };
+const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
+  const previewData = useImageUploadStore((s) => s.previewData);
+  const showPreviewModal = useImageUploadStore((s) => s.showPreviewModal);
+  const selectedImageItemForPreview = useImageUploadStore(
+    (s) => s.selectedImageItemForPreview,
+  );
+  const addFiles = useImageUploadStore((s) => s.addFiles);
+  const replaceImageItem = useImageUploadStore((s) => s.replaceImageItem);
+  const openPreviewModal = useImageUploadStore((s) => s.openPreviewModal);
+  const closePreviewModal = useImageUploadStore((s) => s.closePreviewModal);
+  const selectAll = useImageUploadStore((s) => s.selectAll);
+  const toggleSelectItem = useImageUploadStore((s) => s.toggleSelectItem);
+  const reset = useImageUploadStore((s) => s.reset);
+
+  const [pinturaItem, setPinturaItem] = useState<ImageItem | null>(null);
+
+  const editorDefaults = useMemo(() => getEditorDefaults(), []);
+
+  const onDropAccepted = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 0) addFiles(acceptedFiles);
+    },
+    [addFiles],
+  );
+
+  const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } =
+    useDropzone({
+      onDropAccepted,
+      accept: { "image/*": [] },
+      multiple: true,
+    });
 
   const handleUpload = (): void => {
-    const fileItemsToUploadToServer = previewData.filter((i) => {
-      return i.selected;
-    });
+    const fileItemsToUploadToServer = previewData.filter((i) => i.selected);
     console.log("Uploading ", fileItemsToUploadToServer);
     onUploadComplete(fileItemsToUploadToServer);
   };
 
   const handlePreview = (item: ImageItem): void => {
-    setShowSelectedImageItemForPreview(item);
-    setShowPreviewModal(!showPreviewModal);
+    openPreviewModal(item);
   };
 
   const splitArray = (array: ImageItem[], chunkSize: number) => {
@@ -67,37 +85,30 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
   };
 
   const handleClosePreviewModal = (): void => {
-    setShowPreviewModal(false);
-    setShowSelectedImageItemForPreview({} as ImageItem);
+    closePreviewModal();
   };
 
   const handleSelectAll = (): void => {
-    const updatedPreviewData = previewData.map((item) => ({
-      ...item,
-      selected: true,
-    }));
-    setPreviewData(updatedPreviewData);
+    selectAll();
   };
 
   const areAllSelected =
     previewData.length > 0 && previewData.every((item) => item.selected);
 
   const handleSelectItem = (selectedItem: ImageItem): void => {
-    const index = previewData.findIndex((pd) => pd === selectedItem);
-    if (index !== -1) {
-      const updatedPreviewData = [...previewData];
-      updatedPreviewData[index] = {
-        ...updatedPreviewData[index],
-        selected: !updatedPreviewData[index].selected,
-      };
-      setPreviewData(updatedPreviewData);
-    }
+    toggleSelectItem(selectedItem);
   };
 
   const getGridSizeForCardContainer = (arraySize: number): number => {
-    const maxSize: number = 12; //Col-md-12
+    const maxSize: number = 12;
     const definedSize = maxSize / arraySize;
     return definedSize;
+  };
+
+  const handlePinturaProcess = (detail: PinturaDefaultImageWriterResult) => {
+    if (!pinturaItem) return;
+    replaceImageItem(pinturaItem.previewUrl, detail.dest);
+    setPinturaItem(null);
   };
 
   const renderImgsDiv = () => {
@@ -108,10 +119,10 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
         {arrays.map((element, index) => {
           return (
             <Grid key={index} container size={12} spacing={3}>
-              {element.map((subElement, index) => {
+              {element.map((subElement) => {
                 return (
                   <Grid
-                    key={index}
+                    key={subElement.previewUrl}
                     size={getGridSizeForCardContainer(element.length)}
                   >
                     <Card variant="outlined">
@@ -131,6 +142,12 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
 
                       <CardActionArea>
                         <CardActions>
+                          <IconButton
+                            onClick={() => setPinturaItem(subElement)}
+                            aria-label="Recortar o voltear imagen"
+                          >
+                            <EditIcon />
+                          </IconButton>
                           <IconButton onClick={() => handlePreview(subElement)}>
                             <VisibilityIcon />
                           </IconButton>
@@ -161,17 +178,62 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
     <>
       <Grid container spacing={2}>
         <Grid size={12}>
-          <p>Suba la(s) imagen(es) de lo(s) documento(s)</p>
-          <label htmlFor="imageUpload">Adjunte las imagenes: </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple={true}
-            placeholder="Archivos a cargar"
-            id="imageUpload"
-            value={selectedFileName}
-            onChange={handleFileChange}
-          />
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Suba la(s) imagen(es) de lo(s) documento(s). Puede arrastrarlas o
+            elegirlas desde su equipo.
+          </Typography>
+          <Box
+            {...getRootProps()}
+            sx={{
+              width: "100%",
+              minHeight: 160,
+              border: "2px dashed",
+              borderColor: isDragReject
+                ? "error.main"
+                : isDragActive
+                  ? "primary.main"
+                  : "divider",
+              borderRadius: 1,
+              bgcolor: isDragActive ? "action.hover" : "background.paper",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              px: 2,
+              py: 3,
+              transition:
+                "border-color 0.15s ease, background-color 0.15s ease",
+            }}
+          >
+            <input {...getInputProps()} />
+            <CloudUploadIcon
+              sx={{ fontSize: 40, color: "primary.main", mb: 1 }}
+              aria-hidden
+            />
+            <Typography align="center" color="text.secondary">
+              {isDragActive
+                ? "Suelte las imágenes aquí…"
+                : "Arrastre imágenes aquí o haga clic para elegir"}
+            </Typography>
+            <Typography
+              variant="caption"
+              align="center"
+              color="text.secondary"
+              sx={{ mt: 0.5 }}
+            >
+              Formatos de imagen habituales (PNG, JPEG, …)
+            </Typography>
+            {fileRejections.length > 0 ? (
+              <Typography
+                variant="caption"
+                color="error"
+                sx={{ mt: 1, textAlign: "center" }}
+              >
+                Algunos archivos no son imágenes válidas o no se aceptaron.
+              </Typography>
+            ) : null}
+          </Box>
         </Grid>
         <Grid size={12}>
           <FormControlLabel
@@ -185,7 +247,7 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
             label="Seleccionar todos"
           />
         </Grid>
-        <Paper elevation={2}>
+        <Paper elevation={2} sx={{ width: "100%" }}>
           <div>{renderImgsDiv()}</div>
         </Paper>
         <Dialog fullScreen maxWidth="lg" open={showPreviewModal}>
@@ -212,11 +274,49 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
             <Box>
               <Paper>
                 <ImagePreviewer
-                  imgSrc={selectedImageItemForPreview?.previewUrl}
-                  imgDescription={selectedImageItemForPreview?.file?.name}
+                  imgSrc={selectedImageItemForPreview?.previewUrl ?? ""}
+                  imgDescription={selectedImageItemForPreview?.file?.name ?? ""}
                 />
               </Paper>
             </Box>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          fullScreen
+          open={Boolean(pinturaItem)}
+          onClose={() => setPinturaItem(null)}
+        >
+          <DialogTitle sx={{ p: 0 }}>
+            <AppBar position="static" color="default" elevation={1}>
+              <Toolbar>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                  Editar imagen
+                  {pinturaItem?.file?.name ? ` — ${pinturaItem.file.name}` : ""}
+                </Typography>
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  onClick={() => setPinturaItem(null)}
+                  aria-label="Cerrar editor"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+          </DialogTitle>
+          <DialogContent sx={{ p: 0, height: "calc(100vh - 64px)" }}>
+            {pinturaItem ? (
+              <Box sx={{ height: "100%", minHeight: 480 }}>
+                <PinturaEditor
+                  {...editorDefaults}
+                  key={pinturaItem.previewUrl}
+                  src={pinturaItem.previewUrl}
+                  onProcess={handlePinturaProcess}
+                  onClose={() => setPinturaItem(null)}
+                />
+              </Box>
+            ) : null}
           </DialogContent>
         </Dialog>
       </Grid>
@@ -236,8 +336,7 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ onUploadComplete }) => {
             variant="outlined"
             color="warning"
             onClick={() => {
-              setPreviewData([] as ImageItem[]);
-              setSelectedFileName("");
+              reset();
             }}
           >
             Reiniciar

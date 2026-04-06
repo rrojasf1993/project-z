@@ -10,4 +10,6 @@ public class OcrJob
     public OcrResult? Result { get; set; }
     public string? Error { get; set; }
     public required string FileName { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

@@ -142,6 +142,38 @@ namespace HandwritenRecognition.API.Migrations
                     b.ToTable("ImageInfos");
                 });
 
+            modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrBoundingBox", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("H")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SourceLineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("W")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<int>("X")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<int>("Y")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SourceLineId");
+
+                    b.ToTable("OcrBoundingBox");
+                });
+
             modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrDocument", b =>
                 {
                     b.Property<Guid>("Id")
@@ -159,6 +191,9 @@ namespace HandwritenRecognition.API.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Documents");
@@ -169,6 +204,9 @@ namespace HandwritenRecognition.API.Migrations
                     b.Property<Guid>("JobId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Error")
                         .HasMaxLength(10000)
@@ -185,6 +223,9 @@ namespace HandwritenRecognition.API.Migrations
                     b.Property<int>("Status")
                         .HasMaxLength(60)
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("JobId");
 
@@ -316,6 +357,17 @@ namespace HandwritenRecognition.API.Migrations
                     b.Navigation("Result");
                 });
 
+            modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrBoundingBox", b =>
+                {
+                    b.HasOne("HandwritenRecognition.Data.Entities.OcrLine", "SourceLine")
+                        .WithMany("BoundingBoxes")
+                        .HasForeignKey("SourceLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SourceLine");
+                });
+
             modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrJob", b =>
                 {
                     b.HasOne("HandwritenRecognition.Data.Entities.OcrResult", "Result")
@@ -365,6 +417,11 @@ namespace HandwritenRecognition.API.Migrations
             modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrDocument", b =>
                 {
                     b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrLine", b =>
+                {
+                    b.Navigation("BoundingBoxes");
                 });
 
             modelBuilder.Entity("HandwritenRecognition.Data.Entities.OcrResult", b =>

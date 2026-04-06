@@ -6,6 +6,9 @@ using HandwritenRecognition.Data.UnitOfWork;
 using HandwritenRecognition.Domain.MappingConfig;
 using HandwritenRecognition.Services;
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Polly.CircuitBreaker;
+using Polly.Retry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,7 @@ builder.Services.AddDbContext<OcrDbContext>(options =>
         b => b.MigrationsAssembly("HandwritenRecognition.API"));
     options.EnableSensitiveDataLogging();
 });
-
+//builder.Services.AddTransient<AsyncPolicy>();
 builder.Services.AddHttpClient<IRetryingHttpClient, RetryingHttpClient>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["OcrAPISettings:BaseUrl"] ?? string.Empty);
@@ -36,8 +39,7 @@ builder.Services.AddSingleton(mapperInstance);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IOcrService, OcrService>();
 builder.Services.AddTransient<IDocumentService, DocumentService>();
-
-//Background services - experimiental!
+builder.Services.AddSignalR();
 builder.Services.AddHostedService<PythonOcrWorker>();
 builder.Services.AddCors(options =>
 {

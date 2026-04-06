@@ -29,7 +29,7 @@ public class OcrDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-
+       //modelBuilder.Entity<OcrDocument>().ToTable("OcrProcessDocument");
         modelBuilder.Entity<OcrDocument>()
             .Property(ocd => ocd.Id)
             .IsRequired().ValueGeneratedOnAdd();
@@ -53,6 +53,7 @@ public class OcrDbContext : DbContext
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.Status).IsRequired().HasMaxLength(60);
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.FileName).IsRequired().HasMaxLength(255);
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.Error).HasMaxLength(10000);
+        
 
         modelBuilder.Entity<OcrResult>().HasKey(r => r.ResultId);
         modelBuilder.Entity<OcrResult>().Property(r => r.ResultId).IsRequired();
@@ -100,11 +101,16 @@ public class OcrDbContext : DbContext
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.WasHumanCorrected).IsRequired();
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.Value).IsRequired();
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.CreatedAt).IsRequired();
-
-
-
-
-
+        
+        
+        modelBuilder.Entity<OcrBoundingBox>().HasKey(ef => ef.Id);
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef => ef.Id).IsRequired();
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef=>ef.H).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef => ef.W).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef => ef.X).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef => ef.Y).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(ef => ef.W).IsRequired().HasMaxLength(10);
+        
 
     }
 }

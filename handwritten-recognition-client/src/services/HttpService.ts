@@ -24,21 +24,33 @@ export default class HttpService<S, T> {
     return stronglyTypedResult;
   }
 
-  public async DoGet(urlPath:string):Promise<T>{
-     const url = `${this._baseUrl}/${urlPath}`;
-     let stronglyTypedResult: T = {} as T;
-     try{
-       const result=await fetch(url,{method:"get"});
-       if(result.ok){
-        const jsonResponse=await result.json();
-        stronglyTypedResult= jsonResponse as T;
-       }
-     }
-     catch(err)
-     {
+  public async DoGet(urlPath: string): Promise<T> {
+    const url = `${this._baseUrl}/${urlPath}`;
+    let stronglyTypedResult: T = {} as T;
+    try {
+      const result = await fetch(url, { method: "get" });
+      if (result.ok) {
+        const jsonResponse = await result.json();
+        stronglyTypedResult = jsonResponse as T;
+      }
+    } catch (err) {
       console.error("API Call DoGet Error", err);
-     }
-     return stronglyTypedResult;
+    }
+    return stronglyTypedResult;
+  }
+
+  public async DownloadFile(urlPath: string): Promise<Blob> {
+    const url = `${this._baseUrl}/${urlPath}`;
+    let data = {} as Blob;
+    try {
+      const result = await fetch(url, { method: "get" });
+      if (result.ok) {
+        data = await result.blob();
+      }
+    } catch (err) {
+      console.error("API Call Download Error", err);
+    }
+    return data;
   }
 
   /**
@@ -48,23 +60,22 @@ urlPath:string,data:S     */
     const url = `${this._baseUrl}/${urlPath}`;
     let stronglyTypedResult: T = {} as T;
     const formData = new FormData();
-    data.forEach(async (fileInfo: File) => 
-    {
+    data.forEach(async (fileInfo: File) => {
       const realFile: File = fileInfo;
       try {
-        formData.append(realFile.name,realFile);
+        formData.append(realFile.name, realFile);
       } catch (error) {
         console.error(`Failed to load file from: ${realFile.name}`, error);
         return;
       }
     });
-    try 
-    {
+    try {
       const response = await fetch(url, {
         method: "POST",
         body: formData,
         headers: {
-          "Content-Disposition": "form-data", name: "files",
+          "Content-Disposition": "form-data",
+          name: "files",
         },
       });
       if (!response.ok) throw new Error("Network response was not ok");

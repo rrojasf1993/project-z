@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace HandwritenRecognition.Cross.Infrastructure.FileSystem;
 
 public static class FileUtil
@@ -29,8 +31,22 @@ public static class FileUtil
         }
         return ms;
     }
-    
-    
-    
+
+    public static string GetContentType(string path)
+    {
+        string extension=Path.GetExtension(path);
+        switch (extension)
+        {
+            case ".jpg":
+                return "image/jpeg";
+            case ".png":
+                return "image/png";
+            case ".gif":
+                return "image/gif";
+            case ".bmp":
+                return "image/bmp";
+        }
+        return "application/octet-stream";
+    }
     
 }

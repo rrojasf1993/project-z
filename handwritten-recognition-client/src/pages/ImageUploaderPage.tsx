@@ -42,9 +42,15 @@ const ImageUploaderPage: React.FC = () => {
 
   return (
     <Grid container spacing={2} sx={{ padding: "30px" }}>
-      <Paper elevation={2} sx={{ width: "100%" }}>
+      <Paper elevation={2} sx={{ width: "100%", p: 2 }}>
         <Grid size={12}>
-          <Typography variant="h4">Ocr documentos manuales</Typography>
+          <Typography variant="h4" gutterBottom>
+            OCR documentos manuales
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Arrastre imágenes al área indicada o elija archivos. Use el lápiz
+            para recortar o voltear antes de enviar al servidor.
+          </Typography>
         </Grid>
         <Grid size={12}>
           <ImageUpload onUploadComplete={handleUploadComplete} />
