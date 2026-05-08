@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\HandwritenRecognition.Cross\HandwritenRecognition.Cross.csproj"/>
         <ProjectReference Include="..\HandwritenRecognition.Data\HandwritenRecognition.Data.csproj"/>
+        <ProjectReference Include="..\HandwritenRecognition.Domain\HandwritenRecognition.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

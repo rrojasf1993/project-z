@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1c492a6c-163a-4230-9467-60e3fabe9659" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.API/BackgroundWorkers/DocumentFeatureExtractorWorker.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.API/Notification/JobsHub.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/BaseDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/BaseEvent.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/DocumentTypeDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/FieldTypeDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrBoundingBoxDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrJobEvent.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/RuleScopeDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/RuleTypeDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/Enums/MessageTypes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/Util.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/BaseEntity.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/DocumentTypeExample.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/DocumentTypeKeywordRules.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/DocumentTypeRegexPatternRules.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/DocumentTypes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/FieldType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrBoundingBox.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/RuleScope.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/RuleType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/1-AddDocumentTypes.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/2-AddFieldTypes.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/3-AddRuleScopes.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/4-AddRuleTypes.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/5-AddFieldRules.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/IFileService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/IRuleService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/RuleService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/ExtractTableRequest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/TableCell.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/TableResult.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/TableRow.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Services/DocumentStructureService.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Web/Controllers/DocumentStructure_Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/BackgroundWorkers/PythonOcrWorker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/BackgroundWorkers/PythonOcrWorker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/Controllers/DocumentsController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/Controllers/DocumentsController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/Controllers/OcrController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/Controllers/OcrController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/Migrations/OcrDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/Migrations/OcrDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.API/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.API/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/ExtractedFieldDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/ExtractedFieldDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/FieldRuleDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/FieldRuleDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrDocumentDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrDocumentDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrJobDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrJobDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrLineDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrLineDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrResultDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/DataTransferObjects/OcrResultDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/Enums/FieldType.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/Enums/RuleScope.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/HandwritenRecognition.Cross.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/HandwritenRecognition.Cross.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/FileSystem/FileUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/FileSystem/FileUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/RetryingHttpClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/RetryingHttpClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/SerializationHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Cross/Infrastructure/SerializationHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/ExtractedFields.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/ExtractedFields.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/FieldRule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/FieldRule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrDocument.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrDocument.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrJob.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrLine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Entities/OcrLine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/OcrDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/OcrDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Repository/HandwritenRecognitionRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Repository/HandwritenRecognitionRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/Repository/IGenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/Repository/IGenericRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/UnitOfWork/IUnitOfWork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/UnitOfWork/IUnitOfWork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Data/UnitOfWork/UnitOfWork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Data/UnitOfWork/UnitOfWork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Domain/HandwritenRecognition.Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Domain/HandwritenRecognition.Domain.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Domain/MappingConfig/OcrDocumentProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Domain/MappingConfig/OcrDocumentProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/IRuleEvaluator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/IRuleEvaluator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/RegexEvaluator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/RegexEvaluator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/RuleEngine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Domain/Rules/RuleEngine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Services/DocumentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/DocumentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Services/HandwritenRecognition.Services.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/HandwritenRecognition.Services.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Services/IDocumentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/IDocumentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Services/IOcrService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/IOcrService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.Services/OcrService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.Services/OcrService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/HandwritenRecognition.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition/HandwritenRecognition.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition/appsettings.Development.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandwritenRecognition/appsettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hr.MachineLearningAPI/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/OcrLine.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/OcrLine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/OcrResult.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Models/OcrResult.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hr.MachineLearningAPI/Services/OcrService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Services/OcrService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hr.MachineLearningAPI/Web/Controllers/Ocr_Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hr.MachineLearningAPI/Web/Controllers/Ocr_Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/components/BaseComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/components/BaseComponent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/components/DocumentReview/DocumentReviewer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/components/DocumentReview/DocumentReviewer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/components/ImagePreview/ImagePreviewer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/components/ImagePreview/ImagePreviewer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/components/ImageUploader/ImageUpload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/components/ImageUploader/ImageUpload.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/components/PendingDocuments/PendingDocumentsLoad.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/components/PendingDocuments/PendingDocumentsLoad.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/ConfigProvider.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/EnhancedTable.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/EnhancedTableHead.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/EnhancedTableToolbar.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/routeConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/routeConfig.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/util/Utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/cross/util/Utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/main.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/HeadCell.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrDocumentDto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrDocumentDto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrJobDto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrJobDto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrLineDto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/model/dto/OcrLineDto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/props/EnhancedTableBodyProps.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/props/EnhancedTableProps.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/props/EnhancedTableToolbarProps.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/model/props/PendingDocumentsProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/model/props/PendingDocumentsProps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/DocumentReviewPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/DocumentReviewPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/ImageUploaderPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/ImageUploaderPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/PendingDocumentsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/pages/PendingDocumentsPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/src/services/HttpService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/src/services/HttpService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handwritten-recognition-client/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/handwritten-recognition-client/vite.config.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="3D4LLy9SPHaHAdpfXiP0tY0eMXw" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "master",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1c492a6c-163a-4230-9467-60e3fabe9659" name="Changes" comment="" />
+      <created>1777536344563</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1777536344563</updated>
+      <workItem from="1777536347007" duration="78000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

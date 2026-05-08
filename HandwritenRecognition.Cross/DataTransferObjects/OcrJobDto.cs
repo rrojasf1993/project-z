@@ -1,10 +1,12 @@
 namespace HandwritenRecognition.Cross.DataTransferObjects;
 
-public class OcrJobDto
+public class OcrJobDto:BaseDto
 {
     public Guid JobId { get; set; }
     public OcrJobStatus Status { get; set; }
     public OcrResultDto? Result { get; set; }
     public string? Error { get; set; }
     public  string FileName { get; set; }
+    public  string PreprocessedFileName { get; set; }
+
 }

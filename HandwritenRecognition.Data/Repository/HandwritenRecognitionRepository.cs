@@ -7,13 +7,13 @@ namespace HandwritenRecognition.Data.Repository;
 
 public class HandwritenRecognitionRepository<T> : IGenericRepository<T> where T : class
 {
-    protected readonly OcrDbContext _context;
-    protected readonly DbSet<T> _dbSet;
+    private readonly OcrDbContext _context;
+    private readonly DbSet<T> _dbSet;
 
     public HandwritenRecognitionRepository(OcrDbContext context)
     {
         _context = context;
-        _dbSet = context.Set<T>();
+        _dbSet = _context.Set<T>();
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -23,7 +23,7 @@ public class HandwritenRecognitionRepository<T> : IGenericRepository<T> where T 
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _dbSet.FindAsync(id);
+        return await _dbSet.FindAsync([id], CancellationToken.None);
     }
 
     public async Task AddAsync(T entity)
@@ -40,7 +40,7 @@ public class HandwritenRecognitionRepository<T> : IGenericRepository<T> where T 
     {
         _dbSet.Remove(entity);
     }
-    
+
     public IEnumerable<T> Get(Expression<Func<T, bool>> filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
     {
@@ -53,14 +53,8 @@ public class HandwritenRecognitionRepository<T> : IGenericRepository<T> where T 
             query = query.Include(property);
 
         if (orderBy != null)
-          
+
             return orderBy(query).ToList();
         return query.ToList();
-    }
-
-    
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
     }
 }

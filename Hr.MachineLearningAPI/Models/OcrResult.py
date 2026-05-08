@@ -9,8 +9,9 @@ from Models.QualityInfo import QualityInfo
 
 
 class OcrResult(BaseModel):
-    lines:List[OcrLine]=[]
-    imageInfo: List[ImageInfo]=[]
-    qualityInfo: List[QualityInfo]=[]
-    documentId: uuid.UUID=uuid.uuid4()
-    processData:List[ImagePreProcess]=[]
+    lines: List[OcrLine] = []
+    imageInfo: List[ImageInfo] = []
+    qualityInfo: List[QualityInfo] = []
+    documentId: uuid.UUID = uuid.uuid4()
+    processData: List[ImagePreProcess] = []
+    preProcessImgPath: str=""

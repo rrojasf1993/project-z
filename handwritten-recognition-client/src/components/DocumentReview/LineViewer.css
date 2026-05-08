@@ -1,0 +1,31 @@
+.lineViewerLineContainerGrid{
+    border: solid 1px lightskyblue;
+}
+.lineLabelOk{
+    color: green;
+}
+
+.lineLabelWarning{
+    color: orange;
+}
+
+.lineLabelError{
+    color: red;
+}
+.paperContainer{
+  height: -moz-available;
+  max-height: -moz-available;
+  overflow-y: scroll;
+  padding: 5%;
+  max-width: 100%;
+}
+
+
+.textField :hover{
+    background: lightgreen;
+}
+
+.textField :focus{
+    background: lightyellow;
+}
+

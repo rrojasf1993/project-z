@@ -13,8 +13,10 @@ public class OcrDbContext : DbContext
     public DbSet<OcrJob> Jobs => Set<OcrJob>();
     public DbSet<ImageInfo> ImageInfos => Set<ImageInfo>();
     public DbSet<QualityData> QualityDatas => Set<QualityData>();
-    public DbSet<ProcessData> ProcessDatas => Set<ProcessData>();
-
+    protected DbSet<ProcessData> ProcessDatas => Set<ProcessData>();
+    protected DbSet<OcrBoundingBox> OcrBoundingBoxes => Set<OcrBoundingBox>();
+    protected DbSet<OcrLine> OcrLines => Set<OcrLine>();
+    protected DbSet<ExtractedFields> ExtractedFields => Set<ExtractedFields>();
 
     public OcrDbContext()
     {
@@ -28,15 +30,14 @@ public class OcrDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-
         modelBuilder.Entity<OcrDocument>()
             .Property(ocd => ocd.Id)
             .IsRequired().ValueGeneratedOnAdd();
         modelBuilder.Entity<OcrDocument>().HasKey(ocd => ocd.Id);
-        modelBuilder.Entity<OcrDocument>().Property(ocd => ocd.CreatedAt).HasDefaultValueSql("getdate()");
+        modelBuilder.Entity<OcrDocument>().Property(ocd => ocd.CreatedAt).IsRequired();
         modelBuilder.Entity<OcrDocument>().Property(ocd => ocd.ConfidenceAvg).IsRequired();
         modelBuilder.Entity<OcrDocument>().Property(ocd => ocd.Status).IsRequired();
+        modelBuilder.Entity<OcrDocument>().Property(ocd => ocd.UpdatedAt).IsRequired();
 
 
         modelBuilder.Entity<OcrLine>().HasKey(ol => ol.Id);
@@ -52,7 +53,9 @@ public class OcrDbContext : DbContext
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.JobId).ValueGeneratedOnAdd();
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.Status).IsRequired().HasMaxLength(60);
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.FileName).IsRequired().HasMaxLength(255);
+        modelBuilder.Entity<OcrJob>().Property(ocr => ocr.PreprocessedFileName).HasMaxLength(255);
         modelBuilder.Entity<OcrJob>().Property(ocr => ocr.Error).HasMaxLength(10000);
+        
 
         modelBuilder.Entity<OcrResult>().HasKey(r => r.ResultId);
         modelBuilder.Entity<OcrResult>().Property(r => r.ResultId).IsRequired();
@@ -75,36 +78,74 @@ public class OcrDbContext : DbContext
 
 
         modelBuilder.Entity<FieldRule>().Property(fr => fr.IsActive).IsRequired();
-        modelBuilder.Entity<FieldRule>().Property(fr => fr.ValidationPattern).IsRequired().HasMaxLength(1500);
-        modelBuilder.Entity<FieldRule>().Property(fr => fr.DetectionPattern).IsRequired().HasMaxLength(1500);
-        modelBuilder.Entity<FieldRule>().Property(fr=>fr.Scope).IsRequired();
+        modelBuilder.Entity<FieldRule>().Property(fr => fr.ValidationPattern).HasMaxLength(1500);
+        modelBuilder.Entity<FieldRule>().Property(fr => fr.DetectionPattern).HasMaxLength(1500);
         modelBuilder.Entity<FieldRule>().Property(fr=>fr.UseNextLine).IsRequired();
-        modelBuilder.Entity<FieldRule>().Property(fr=>fr.MinConfidence).IsRequired();
-        modelBuilder.Entity<FieldRule>().Property(fr => fr.ConfidenceWeight).IsRequired();
         modelBuilder.Entity<FieldRule>().Property(fr => fr.Priority).IsRequired();
-        modelBuilder.Entity<FieldRule>().Property(fr => fr.DocumentType).IsRequired().HasMaxLength(300);
         modelBuilder.Entity<FieldRule>().HasKey(fr => fr.Id);
-        modelBuilder.Entity<FieldRule>().Property(fr => fr.FieldType).HasMaxLength(300).IsRequired();
+        modelBuilder.Entity<FieldRule>().Property(fr => fr.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<FieldRule>().Property(fr => fr.FieldName).IsRequired();
         
 
         modelBuilder.Entity<ProcessData>().Property(pd => pd.Id).IsRequired();
+        modelBuilder.Entity<ProcessData>().HasKey(pd => pd.Id);
         modelBuilder.Entity<ProcessData>().Property(pd => pd.Id).ValueGeneratedOnAdd();
         modelBuilder.Entity<ProcessData>().Property(pd => pd.ProcessingTime).IsRequired();
         modelBuilder.Entity<ProcessData>().Property(pd => pd.Profile).IsRequired().HasMaxLength(300);
+        
         
         modelBuilder.Entity<ExtractedFields>().Property(ef => ef.Id).IsRequired().ValueGeneratedOnAdd();
         modelBuilder.Entity<ExtractedFields>().HasKey(ef => ef.Id);
         modelBuilder.Entity<ExtractedFields>().Property(ef => ef.FieldName).IsRequired();
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.Value).IsRequired();
-        modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.RuleId).IsRequired();
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.WasHumanCorrected).IsRequired();
         modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.Value).IsRequired();
-        modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.CreatedAt).IsRequired();
+        modelBuilder.Entity<ExtractedFields>().Property(ef => ef.CreatedAt).IsRequired();
+        modelBuilder.Entity<ExtractedFields>().Property(ef=>ef.UpdatedAt).IsRequired();
+        
+        modelBuilder.Entity<OcrBoundingBox>().HasKey(obb => obb.Id);
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb => obb.Id).IsRequired();
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb=>obb.H).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb => obb.W).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb => obb.X).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb => obb.Y).IsRequired().HasMaxLength(10);
+        modelBuilder.Entity<OcrBoundingBox>().Property(obb => obb.W).IsRequired().HasMaxLength(10);
+        
+        modelBuilder.Entity<FieldType>().Property(ft => ft.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<FieldType>().Property(ft => ft.Description).IsRequired().HasMaxLength(500);
+        modelBuilder.Entity<FieldType>().HasKey(ft => ft.Id);
+        modelBuilder.Entity<FieldType>().Property(ft => ft.CreatedAt).IsRequired();
+        modelBuilder.Entity<FieldType>().Property(ft => ft.UpdatedAt).IsRequired();
 
-
-
-
-
+        modelBuilder.Entity<RuleScope>().Property(rs => rs.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<RuleScope>().HasKey(rs => rs.Id);
+        modelBuilder.Entity<RuleScope>().Property(rs=>rs.Name).IsRequired().HasMaxLength(300);
+        modelBuilder.Entity<RuleScope>().Property(rs=>rs.Notes).HasMaxLength(500);
+        
+        modelBuilder.Entity<RuleType>().Property(rt => rt.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<RuleType>().HasKey(rt => rt.Id);
+        modelBuilder.Entity<RuleType>().Property(rt => rt.Kind).IsRequired().HasMaxLength(500);
+        modelBuilder.Entity<RuleType>().Property(rt=>rt.Notes).HasMaxLength(500);
+        
+        modelBuilder.Entity<DocumentTypes>().HasKey(rt => rt.Id);
+        modelBuilder.Entity<DocumentTypes>().Property(rt => rt.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<DocumentTypes>().Property(rt => rt.Name).IsRequired().HasMaxLength(300);
+        modelBuilder.Entity<DocumentTypes>().Property(rt=>rt.Notes).HasMaxLength(500);
+        
+        modelBuilder.Entity<DocumentTypeKeywordRules>().HasKey(kwr => kwr.Id);
+        modelBuilder.Entity<DocumentTypeKeywordRules>().Property(kwr => kwr.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<DocumentTypeKeywordRules>().Property(kwr => kwr.Keyword).IsRequired().HasMaxLength(600);
+        modelBuilder.Entity<DocumentTypeKeywordRules>().Property(kwr => kwr.Weight).IsRequired();
+        
+        modelBuilder.Entity<DocumentTypeRegexPatternRules>().HasKey(trpr => trpr.Id);
+        modelBuilder.Entity<DocumentTypeRegexPatternRules>().Property(trpr => trpr.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<DocumentTypeRegexPatternRules>().Property(trpr => trpr.RegexPattern).IsRequired().HasMaxLength(1500);
+        modelBuilder.Entity<DocumentTypeRegexPatternRules>().Property(trpr => trpr.Weight).IsRequired();
+        
+        modelBuilder.Entity<DocumentTypeExample>().HasKey(dte => dte.Id);
+        modelBuilder.Entity<DocumentTypeExample>().Property(dte => dte.Id).IsRequired().ValueGeneratedOnAdd();
+        modelBuilder.Entity<DocumentTypeExample>().Property(dte=>dte.SampleText).IsRequired().HasMaxLength(-1);
+        modelBuilder.Entity<DocumentTypeExample>().Property(dte => dte.EmbeddingVector).HasMaxLength(-1);
 
     }
 }

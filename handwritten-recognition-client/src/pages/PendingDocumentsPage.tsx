@@ -1,39 +1,38 @@
-import { Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import PendingDocumentsLoad from "../components/PendingDocuments/PendingDocumentsLoad";
-import HttpService from "../services/HttpService";
 import type { OcrDocumentDto } from "../model/dto/OcrDocumentDto";
-import { useEffect, useState } from "react";
+import {  useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDocumentsStore } from "../store/DocumentsStore";
+import type { IDocumentsStoreModel } from "../model/DocumentsStoreModel";
+import LoadingComponent from "../cross/LoadingComponent";
 
 const PendingDocumentsPage = () => {
-  const [documents, setDocuments] = useState<Array<OcrDocumentDto>>(
-    [] as Array<OcrDocumentDto>,
-  );
-  const [showWaitingUi, setShowWaitingUi] = useState<boolean>(false);
+  const isLoading=useDocumentsStore((s:IDocumentsStoreModel)=>s.isLoading);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const errorData=useDocumentsStore((s:IDocumentsStoreModel)=>s.errorData);
+  const pendingDocs=useDocumentsStore((s:IDocumentsStoreModel)=>s.pendingDocuments);
+  const getPendingDocs=useDocumentsStore((s:IDocumentsStoreModel)=>s.getPendingDocuments);
+  const getJobDataForCurrDoc=useDocumentsStore((s:IDocumentsStoreModel)=>s.getJobInfoForDocument);
+  const setCurrentDocInfo=useDocumentsStore((s:IDocumentsStoreModel)=>s.setCurrentDocumentData);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    geDocumentsPendingReview()
-  }, []);
+  useEffect(() => {
+    getDocumentsPendingReview(null,null)
+  },[]);
 
-  const geDocumentsPendingReview = async () => {
-    const httpClientInstance: HttpService<
-      string,
-      Array<OcrDocumentDto>
-    > = new HttpService();
-    setShowWaitingUi(true);
-    const pendingStatusId=0;
-    const url: string = `api/documents/GetDocumentsByStatus/${pendingStatusId}`;
-    const result = await httpClientInstance.DoGet(url);
-    if (result === null) {
-      alert("Algo fallo obteniendo los documentos ");
-    } else {
-      setShowWaitingUi(false);
-      setDocuments(result);
-    }
+ const getDocumentsPendingReview = (startDate: moment.Moment | null,endDate: moment.Moment | null) => {
+    getPendingDocs(startDate, endDate);
   };
+ const getJobInfoForDocument = async (documentId: string) => {
+  await getJobDataForCurrDoc(documentId);
+};
 
-  const handleReview=()=>{
-
-  }
+  const handleReview = async (docInfo: OcrDocumentDto) => {
+    await getJobInfoForDocument(docInfo.id);
+    setCurrentDocInfo(docInfo);
+    navigate({ pathname: "/document-review" });
+  };
 
   return (
     <Grid container spacing={2} sx={{ padding: "30px" }}>
@@ -48,7 +47,17 @@ const PendingDocumentsPage = () => {
               filtro para poder consultar y revisarlos
             </p>
           </Grid>
-          <>{showWaitingUi ? <Skeleton animation={"pulse"}  /> : <PendingDocumentsLoad documentsList={documents} onReviewAction={handleReview} />}</>
+          <>
+            {isLoading ? (
+              <LoadingComponent/>
+            ) : (
+              <PendingDocumentsLoad
+                documentsList={pendingDocs}
+                onReviewAction={handleReview}
+                handleSearch={getDocumentsPendingReview}
+              />
+            )}
+          </>
         </Grid>
       </Paper>
     </Grid>

@@ -1,18 +1,13 @@
 ﻿services:
-  handwritenrecognition:
-    image: handwritenrecognition
-    build:
-      context: .
-      dockerfile: HandwritenRecognition/Dockerfile
-
   handwritenrecognition.api:
     image: handwritenrecognition.api
     build:
       context: .
       dockerfile: HandwritenRecognition.API/Dockerfile
 
-  handwritenrecognition.bgservices:
-    image: handwritenrecognition.bgservices
+  hr.machinelearningapi:
+    image: hr.machinelearningapi
     build:
       context: .
-      dockerfile: HandwritenRecognition.BgServices/Dockerfile
+      dockerfile: Hr.MachineLearningAPI/Dockerfile
+  

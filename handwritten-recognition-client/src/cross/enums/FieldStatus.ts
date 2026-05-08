@@ -1,0 +1,1 @@
+type FieldStatus = 'valid' | 'warning' | 'error';

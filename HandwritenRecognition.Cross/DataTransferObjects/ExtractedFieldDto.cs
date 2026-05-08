@@ -1,6 +1,6 @@
 namespace HandwritenRecognition.Cross.DataTransferObjects;
 
-public class ExtractedFieldDto
+public class ExtractedFieldDto:BaseDto
 {
     public Guid Id { get; set; }
     public Guid OcrDocumentId { get; set; }
@@ -9,5 +9,4 @@ public class ExtractedFieldDto
     public float Confidence { get; set; }
     public Guid RuleId { get; set; }
     public bool WasHumanCorrected { get; set; }
-    public DateTime CreatedAt { get; set; }
 }

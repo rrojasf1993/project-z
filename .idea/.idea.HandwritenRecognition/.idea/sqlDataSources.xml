@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="14693756-7b4f-473d-885e-993f17fa35d3" name="ocr_Db@localhost (DDL) Mapping">
+      <data-sources db="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" ddl="cc0af046-4e4f-49aa-80a9-75682d64e019" />
+      <scope>
+        <node kind="database" qname="Ocr_Db" />
+      </scope>
+    </mapping>
+  </component>
+</project>

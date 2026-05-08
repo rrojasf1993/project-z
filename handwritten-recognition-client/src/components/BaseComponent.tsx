@@ -1,8 +1,10 @@
 import { StrictMode, useState } from "react";
 import "../index.css";
-import ImageUploaderPage from "../pages/ImageUploaderPage.tsx";
+import { Outlet, Link } from "react-router-dom";
+
 import {
   AppBar,
+  Badge,
   Box,
   IconButton,
   Menu,
@@ -13,33 +15,31 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AccountBoxOutlined,
-  HeatPump,
+  CircleNotificationsOutlined,
+  EditDocument,
+  Money,
   RateReview,
   Rule,
   Settings,
   Upload,
 } from "@mui/icons-material";
+import "./BaseComponent.css";
+import NotificationPanel from "../cross/NotificationsPanel/NotificationPanel";
+const BaseComponent = () => 
+{
 
-
-
-const BaseComponent = (props: any) => {
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
-//  const navigate = useNavigate();
-
-  const handleRedirect=async (e: React.MouseEvent<HTMLAnchorElement>)=>{
-    console.log(e);
-    //const s={"pathname":"/"};
-    //await navigate({path: e.currentTarget.attributes.getNamedItem("href")?.value} as To)
-  }
-
+  const [notificationPanelAnchorElement, setNotificationPanelAnchorElement] = useState<HTMLElement | null>(null);
+  
   const handleMenuClose = (): void => {
     setAnchorElement(null);
   };
+
   return (
     <StrictMode>
       <div>
         <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static">
+          <AppBar position="static" className="mainAppBar">
             <Toolbar>
               <IconButton
                 size="large"
@@ -67,17 +67,17 @@ const BaseComponent = (props: any) => {
                 open={Boolean(anchorElement)}
                 onClose={handleMenuClose}
               >
-                <MenuItem href="/images-upload" onClick={handleRedirect} >
+                <MenuItem component={Link} to="/images-upload">
                   <Upload />
                   Cargar documentos
                 </MenuItem>
-                <MenuItem href="/document-review" onClick={handleRedirect}>
+                <MenuItem component={Link} to="/documents-pending-review">
                   <RateReview />
-                  Revisar documentos
+                  Documentos pendientes de revision
                 </MenuItem>
-                <MenuItem>
-                  <HeatPump />
-                  Revisar estado cargas masivas
+                <MenuItem component={Link} to="/pending-jobs">
+                  <Money />
+                  Jobs Pendientes
                 </MenuItem>
                 <MenuItem>
                   <Rule />
@@ -88,16 +88,23 @@ const BaseComponent = (props: any) => {
                   Configuracion general
                 </MenuItem>
               </Menu>
+              <EditDocument/>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Mondá
+                Paperly 
               </Typography>
               <IconButton color="inherit">
                 <AccountBoxOutlined />
               </IconButton>
+              <IconButton color="inherit" onClick={(e)=>setNotificationPanelAnchorElement(e.currentTarget)}>
+                <Badge badgeContent={"a"} color="warning">
+                <CircleNotificationsOutlined/>
+                </Badge>
+              </IconButton>
             </Toolbar>
           </AppBar>
+          <NotificationPanel anchorElement={notificationPanelAnchorElement} onClose={()=>setNotificationPanelAnchorElement(null)}/>
         </Box>
-        {props.children}
+        <Outlet />
       </div>
     </StrictMode>
   );

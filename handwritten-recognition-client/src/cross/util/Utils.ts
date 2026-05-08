@@ -23,4 +23,32 @@ export class Utils {
       ? (a, b) => this.descendingComparator(a, b, orderBy)
       : (a, b) => -this.descendingComparator(a, b, orderBy);
   }
+
+  public async readPngFromStream(stream: ReadableStream) {
+    if (!stream || !(stream instanceof ReadableStream)) {
+      throw new Error("Invalid stream");
+    }
+
+    const reader = stream.getReader();
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        // Assuming value is a Uint8Array representing the PNG image data
+        const pngData = new Uint8Array(value);
+
+        // Do something with pngData, like loading it into an Image object
+        const img = new Image();
+        img.src =
+          "data:image/png;base64," + btoa(String.fromCharCode(...pngData));
+        return img;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      throw new Error("Failed to read PNG image from stream");
+    }
+  }
 }

@@ -5,4 +5,5 @@ export type OcrDocumentDto={
   createdAt:Date,
   confidenceAvg:number,
   lines:Array<OcrLineDto>
+  updatedAt:Date
 }

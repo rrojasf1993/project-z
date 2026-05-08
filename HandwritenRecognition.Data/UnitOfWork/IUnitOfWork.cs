@@ -15,5 +15,6 @@ public interface IUnitOfWork
     IGenericRepository<ProcessData> ProcessData { get; }
     IGenericRepository<QualityData> QualityInfo { get; }
     IGenericRepository<ImageInfo> ImageInfo { get; }
+    IGenericRepository<OcrBoundingBox> BoundingBoxes { get; }
     Task<int> SaveChangesAsync();
 }

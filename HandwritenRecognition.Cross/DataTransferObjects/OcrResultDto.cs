@@ -7,4 +7,5 @@ public class OcrResultDto
     public List<ImageInfoDto> ImageInfo { get; set; } = [];
     public List<QualityInfoDto> QualityInfo { get; set; } = [];
     public List<ProcessDto> ProcessData { get; set; } = [];
+    public string? PreProcessImgPath { get; set; }
 }

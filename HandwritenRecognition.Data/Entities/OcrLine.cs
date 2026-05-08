@@ -12,5 +12,6 @@ public class OcrLine
     public string? CorrectedText { get; set; }
     public float Confidence { get; set; }
     public string Status { get; set; } = string.Empty;
-    public string BoundingBox { get; set; } 
+    public required string BoundingBox { get; set; } 
+    public required List<OcrBoundingBox> BoundingBoxes { get; set; }
 }

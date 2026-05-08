@@ -1,4 +1,6 @@
+using HandwritenRecognition.Cross;
 using HandwritenRecognition.Cross.DataTransferObjects;
+using HandwritenRecognition.Cross.Infrastructure.FileSystem;
 using HandwritenRecognition.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -7,18 +9,8 @@ namespace HandwritenRecognition.API.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class OcrController : ControllerBase
+public class OcrController(IOcrService ocrService, ILogger<OcrController> logger) : ControllerBase
 {
-    private readonly IOcrService _ocrService;
-    private readonly ILogger<OcrController> _logger;
-
-    public OcrController(IOcrService ocrService, ILogger<OcrController> logger)
-    {
-        _ocrService = ocrService;
-        _logger = logger;
-    }
-
-    
     [HttpPost("[action]")]
     public async Task<ActionResult<List<OcrJobDto>>> ProcessOcrRequest([FromForm]IFormFile[] files)
     {
@@ -28,7 +20,7 @@ public class OcrController : ControllerBase
             List<OcrJobDto> ocrJobs = new List<OcrJobDto>();
             foreach (var file in tempFiles)
             {
-                var result = await _ocrService.CreateOcrJob(file);
+                var result = await ocrService.CreateOcrJob(file);
                 if(result is not null)
                     ocrJobs.Add(result);
             } 
@@ -36,8 +28,48 @@ public class OcrController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError($"{e.Message}\\{e.StackTrace}");
+            logger.LogError("{EMessage}\n\n{EStackTrace}", e.Message, e.StackTrace);
             return StatusCode(500);
         }
     }
+
+    [HttpGet("[action]/StatusId={statusId:int}")]
+    [HttpGet("[action]/statusId={statusId:int}&StartDate={startDate:datetime}&EndDate={endDate:datetime}")]
+    public ActionResult<List<OcrJobDto>> GetOcrJobsByStatus(int statusId, DateTime? startDate=null, DateTime? endDate=null)
+    {
+        List<OcrJobDto> ocrJobs;
+        try
+        {
+            ocrJobs=ocrService.GetOcrJobsByStatus((OcrJobStatus)statusId,startDate,endDate);
+            return Ok(ocrJobs);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("{EMessage}\n\n{EStackTrace}", e.Message, e.StackTrace);
+            return StatusCode(500);
+        }
+    }
+    
+    [HttpGet("[action]/jobId={jobId:guid}")]
+    public async Task<ActionResult> DownloadDocumentImageForJob(Guid jobId)
+    {
+        try
+        {
+            var jobInfo=await ocrService.GetOcrJobById(jobId);
+            if (jobInfo is null)
+                return NotFound("Job not found");
+            if (!System.IO.File.Exists(jobInfo.PreprocessedFileName))
+                return NotFound();
+            string contentType = FileUtil.GetContentType(jobInfo.PreprocessedFileName);
+            return PhysicalFile(jobInfo.PreprocessedFileName, contentType);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("{EMessage}\n\n{EStackTrace}", e.Message, e.StackTrace);
+            return StatusCode(500);
+        }
+        
+    }
+    
+   
 }

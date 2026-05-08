@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/1-AddDocumentTypes.sql" value="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" />
+    <file url="file://$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/2-AddFieldTypes.sql" value="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" />
+    <file url="file://$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/3-AddRuleScopes.sql" value="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" />
+    <file url="file://$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/4-AddRuleTypes.sql" value="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" />
+    <file url="file://$PROJECT_DIR$/HandwritenRecognition.Data/Scripts/DataSeed/5-AddFieldRules.sql" value="5fd6640e-9ae9-4155-8c57-88c9dcb9e3e6" />
+  </component>
+</project>

@@ -5,6 +5,6 @@ namespace HandwritenRecognition.Domain.Rules;
 
 public interface IRuleEvaluator
 {
-    RuleType SupportedRuleType { get; init; }
-    ExtractedFieldDto? Evaluate(FieldRuleDto rule, OcrResultDto document);
+    RuleTypeDto SupportedRuleType { get; set; }
+    ExtractedFieldDto? Evaluate(FieldRuleDto rule, OcrDocumentDto? document);
 }

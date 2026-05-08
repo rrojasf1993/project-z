@@ -4,67 +4,80 @@ export default class HttpService<S, T> {
     this._baseUrl = import.meta.env.VITE_API_BASE_API_PATH;
   }
   /**
-   * DoPost
+   * DoBaseHttpRequest
    */
-  public async DoPost(urlPath: string, data: S): Promise<T> {
+  public async DoBaseHttpRequest(
+    urlPath: string,
+    method: "get" | "post" | "patch" | "put",
+    data?: S,
+  ): Promise<T> {
     const url = `${this._baseUrl}/${urlPath}`;
     let stronglyTypedResult: T = {} as T;
+    let result: Response = {} as Response;
     try {
-      const result = await fetch(url, {
-        body: JSON.stringify(data),
-        method: "post",
-      });
+      if (method !== "get") {
+        result = await fetch(url, {
+          body: JSON.stringify(data),
+          method: method,
+          headers:{
+            "content-type":"application/json"
+          }
+        });
+      } else {
+        result = await fetch(url, {
+          method: method,
+        });
+      }
       if (result.ok) {
         const jsonResponse = await result.json();
-        stronglyTypedResult = JSON.parse(jsonResponse) as T;
+        stronglyTypedResult =
+          method !== "get"
+            ? (JSON.parse(jsonResponse) as T)
+            : (jsonResponse as T);
       }
     } catch (error) {
-      console.error("API Call DoPost Error", error);
+      console.error("API Call DoBaseHttpRequest Error", error);
     }
     return stronglyTypedResult;
   }
 
-  public async DoGet(urlPath:string):Promise<T>{
-     const url = `${this._baseUrl}/${urlPath}`;
-     let stronglyTypedResult: T = {} as T;
-     try{
-       const result=await fetch(url,{method:"get"});
-       if(result.ok){
-        const jsonResponse=await result.json();
-        stronglyTypedResult= jsonResponse as T;
-       }
-     }
-     catch(err)
-     {
-      console.error("API Call DoGet Error", err);
-     }
-     return stronglyTypedResult;
+  public async DownloadFile(urlPath: string): Promise<Blob> {
+    const url = `${this._baseUrl}/${urlPath}`;
+    let data = {} as Blob;
+    try {
+      const result = await fetch(url, { method: "get" });
+      if (result.ok) {
+        data = await result.blob();
+      }
+    } catch (err) {
+      console.error("API Call Download Error", err);
+    }
+    return data;
   }
 
-  /**
-     * DoPostMultipartFormData
-urlPath:string,data:S     */
-  public async DoPostMultipartFormData(urlPath: string, data: Array<File>) {
+  public async DoPostMultipartFormData(
+    urlPath: string,
+    data: Array<File>,
+  ): Promise<T> {
     const url = `${this._baseUrl}/${urlPath}`;
     let stronglyTypedResult: T = {} as T;
     const formData = new FormData();
-    data.forEach(async (fileInfo: File) => 
-    {
+    data.forEach(async (fileInfo: File) => {
       const realFile: File = fileInfo;
       try {
-        formData.append(realFile.name,realFile);
+        formData.append(realFile.name, realFile);
       } catch (error) {
         console.error(`Failed to load file from: ${realFile.name}`, error);
         return;
       }
     });
-    try 
-    {
+    try {
       const response = await fetch(url, {
         method: "POST",
         body: formData,
         headers: {
-          "Content-Disposition": "form-data", name: "files",
+          "Content-Disposition": "form-data",
+          name: "files",
         },
       });
       if (!response.ok) throw new Error("Network response was not ok");

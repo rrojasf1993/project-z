@@ -4,20 +4,18 @@ namespace HandwritenRecognition.Domain.Rules;
 
 public class RuleEngine(IEnumerable<IRuleEvaluator> ruleEvaluators)
 {
-    public List<ExtractedFieldDto> Run(List<FieldRuleDto> fieldRules,OcrResultDto ocrDocument)
+    public List<ExtractedFieldDto?> Run(List<FieldRuleDto> fieldRules, OcrDocumentDto ocrDocument)
     {
-        List<ExtractedFieldDto> extractedFields = new List<ExtractedFieldDto>();
-        foreach (var rule in fieldRules)
-        {
-            var ruleEvaluatorInstance=ruleEvaluators.FirstOrDefault(ev=>ev.SupportedRuleType==rule.Type);
-            if(ruleEvaluatorInstance is null)
-                continue;
-            var evaluationResult=ruleEvaluatorInstance.Evaluate(rule, ocrDocument);
-         if(evaluationResult is not null)
-                extractedFields.Add(evaluationResult);
-        }
-        return extractedFields;
-        
+        var query = from rule in fieldRules.OrderBy(r => r.Priority)
+            let ruleEvaluatorInstance =
+                ruleEvaluators.FirstOrDefault(rev => rev.SupportedRuleType.Id.Equals(rule.Id))
+            select new
+            {
+                currentRuleEvaluator = ruleEvaluatorInstance,
+                currentFieldRule = rule
+            };
+        return query.Select(fieldRuleEvaluator =>
+                fieldRuleEvaluator.currentRuleEvaluator.Evaluate(fieldRuleEvaluator.currentFieldRule, ocrDocument))
+            .ToList();
     }
 }
-

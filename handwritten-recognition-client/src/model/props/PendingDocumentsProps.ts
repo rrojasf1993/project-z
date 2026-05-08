@@ -3,5 +3,6 @@ import type { OcrDocumentDto } from "../dto/OcrDocumentDto"
 export type PendingDocumentListProps=
 {
     documentsList:Array<OcrDocumentDto>;
-    onReviewAction:VoidFunction;
+    onReviewAction:(documentData:OcrDocumentDto)=>void;
+    handleSearch:(startDate: moment.Moment | null, endDate: moment.Moment | null) => void;
 }

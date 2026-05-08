@@ -1,7 +1,14 @@
 fastapi
 uvicorn[standard]
-paddleocr
+paddleocr[all]
 paddlepaddle
 opencv-python-headless
 numpy
 pydantic
+shapely
+pyclipper
+scikit-image
+imgaug
+beautifulsoup4
+rapidfuzz
+pandas

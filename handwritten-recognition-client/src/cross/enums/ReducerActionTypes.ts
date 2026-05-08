@@ -1,0 +1,1 @@
+type ReducerActionTypes = 'SetOcrJobData' | 'SetOcrDocumentData' | 'error';

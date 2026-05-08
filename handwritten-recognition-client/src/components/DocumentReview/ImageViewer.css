@@ -1,0 +1,22 @@
+.imageViewerImg{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.boundingBoxesSvg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.imageReviewContainerDiv{
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    object-fit: scale-down;
+}
+
+.imgToolbar{
+    background: lightyellow;
+}
