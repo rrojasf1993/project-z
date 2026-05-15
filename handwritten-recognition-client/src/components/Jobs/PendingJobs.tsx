@@ -161,6 +161,7 @@ const PendingJobs = (props: JobsQueryProps) => {
               autoFocus={true}
               disableFuture
               minDate={moment().subtract("3", "years")}
+              minDate={moment().subtract("years", "5")}
             />
           </Grid>
           <Grid size={3}>

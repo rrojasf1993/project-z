@@ -1,7 +1,9 @@
 import logging
 import os
 import uuid
+from typing import List, Dict
 import time
+
 import cv2
 import numpy as np
 import gc
@@ -13,121 +15,156 @@ from Models.OcrLine import OcrLine
 from Models.OcrResult import OcrResult
 from Models.Process import ImagePreProcess
 from Models.QualityInfo import QualityInfo
-
+from Util.MatplotLibUtil import MatplotlibUtil
+from pprint import pprint
 
 class OcrService:
     def __init__(self, language: str = "es"):
+
         self._language = language
-        #Optimize for intel processor
-        os.environ["FLAGS_use_mkldnn"] = "1"
-        os.environ["FLAGS_cpu_math_library_num_threads"] = "6"  # Ajusta según tu carga de RAM
-        os.environ["OMP_NUM_THREADS"] = "4"
-        # Configuración optimizada para CPU
-        self._OcrInstance = PaddleOCR(
-            use_angle_cls=True,
-            lang=self._language,
-            cpu_threads=4,  # Aprovecha más núcleos sin duplicar RAM de modelos
-            enable_mkldnn=True  # Aceleración crucial para arquitecturas Intel
+        self._OcrInstance = PaddleOCR()
+        self._DebugUtil = MatplotlibUtil()
+        #os.environ["FLAGS_new_executor"] = "0"
+        #os.environ["FLAGS_use_mkldnn"] = "0"
+        logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S',
+                            filename="./OcrService.log", filemode="a+")
 
-        )
+    def deskewImage(self, image: np.ndarray) -> np.ndarray:
+        #self._DebugUtil.renderStepWithImage(image, "Original")
+        grayScaleImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        #self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale")
+        nonEmptyPixels = np.column_stack(np.where(grayScaleImg > 0))
+        if (nonEmptyPixels.size == 0):
+            return image
+        imageAngle = cv2.minAreaRect(nonEmptyPixels)[-1]
+        if (imageAngle < 45):
+            imageAngle = -(90 + imageAngle)
+        else:
+            imageAngle = -imageAngle
+        (height, width) = image.shape[:2]
+        (centerX, centerY) = (width // 2, height // 2)
+        tempMatrix = cv2.getRotationMatrix2D((centerX, centerY), imageAngle, 1.0)
+        cos = np.abs(tempMatrix[0, 0])
+        sin = np.abs(tempMatrix[0, 1])
+        newWidth = int((height * sin) + (width * cos))
+        newHeight = int((height * cos) + (width * sin))
+        tempMatrix[0, 2] += (newWidth / 2) - centerX
+        tempMatrix[1, 2] += (newHeight / 2) - centerY
+        rotatedImage = cv2.warpAffine(image, tempMatrix, (newWidth, newHeight))
+        #self._DebugUtil.renderStepWithImage(rotatedImage, "Deskewed")
+        return rotatedImage
 
-        logging.basicConfig(
-            format='%(asctime)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S',
-            filename="./OcrService.log",
-            filemode="a+"
-        )
-
-    def resizeImage(self, img: np.ndarray, maxSize=1200) -> np.ndarray:
-        """Redimensiona la imagen para reducir el consumo de RAM en el motor OCR."""
-        height, width = img.shape[:2]
-        scale = max(height, width) / maxSize
-        if scale > 1:
-            # INTER_AREA es el mejor método para reducir tamaño manteniendo nitidez de texto
-            return cv2.resize(img, (int(width / scale), int(height / scale)), interpolation=cv2.INTER_AREA)
-        return img
-
-    def preProcessImg(self, path: str) -> (np.ndarray, ImageInfo, str):
-        # 1. Carga inicial
-        img = cv2.imread(path)
+    def isBlurry(self, img, threshold=100):
         if img is None:
-            raise FileNotFoundError(f"No se pudo leer el archivo en: {path}")
+            return True, 0.0
 
-        imageInfo = ImageInfo()
-        imageInfo.originalHeight, imageInfo.originalWidth = img.shape[:2]
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # 2. Conversión a Gris in-place (ahorra una copia de la imagen original)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = img.astype(np.uint8)
 
-        # 3. Resize temprano: Menos píxeles = Menos RAM en los siguientes pasos
-        img = self.resizeImage(img)
-        imageInfo.actualHeight, imageInfo.actualWidth = img.shape[:2]
-
-        # 4. Análisis de calidad sobre la imagen ya reducida
-        bad, metrics = self.is_Bad_Image(img)
-        imageProfile = "default"
-
-        if bad:
-            imageProfile = "aggresive"
-            # Sobrescribimos 'img' con el resultado del umbral adaptativo
-            img = cv2.adaptiveThreshold(
-                img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                cv2.THRESH_BINARY, 31, 10
-            )
-
-        # 5. Mejora de contraste (CLAHE)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-        img = clahe.apply(img)
-
-        # 6. Suavizado y Ajuste final
-        img = cv2.GaussianBlur(img, (3, 3), 0)
-        img = cv2.convertScaleAbs(img, alpha=1.2, beta=10)
-
-        #guardar la imagen preprocesada para usarla en el frontend
-        preprocessImgPath=self.savePreProcessedImg(img,path)
-        # Retornamos el array de numpy directamente
-        return img, imageInfo, imageProfile, preprocessImgPath
-
-    def savePreProcessedImg(self, img: np.ndarray, originalPath: str) -> str:
-        output_dir = os.path.join(os.sep,os.path.dirname(originalPath),"preprocessedImages");
-        os.makedirs(output_dir, exist_ok=True)
-        fileName = os.path.splitext(os.path.basename(originalPath))[0] + "_preProcessed.png"
-        fullpath = os.path.join(output_dir, fileName)
-        cv2.imwrite(fullpath, img)
-        return fullpath
-
-    def extractText(self, path: str) -> OcrResult:
-        processedImg = None
         try:
-            # 1. Preprocesamos (sale en escala de grises de 1 canal)
-            processedImg, imgPreData, profile, preprocessImgPath = self.preProcessImg(path)
-
-            # 2. COMPATIBILIDAD: PaddleOCR necesita 3 canales (BGR)
-            # aunque la imagen sea en blanco y negro.
-            if len(processedImg.shape) == 2:  # Si es Gris (H, W)
-                processedImg = cv2.cvtColor(processedImg, cv2.COLOR_GRAY2BGR)  # Pasa a (H, W, 3)
-
-            start = time.time()
-
-            # 3. Inferencia
-            # Nota: quitamos 'cls=True' si te dio problemas antes,
-            # ya que lo definimos en el __init__ con use_angle_cls=True
-            rawOcrData = self._OcrInstance.ocr(processedImg)
-
-            if not rawOcrData or not rawOcrData[0]:
-                return None
-
-            processTime = time.time() - start
-            return self.parseRawOcrData(rawOcrData, processTime, imgPreData, profile, preprocessImgPath)
-
+            laplacian_var = cv2.Laplacian(img, cv2.CV_64F).var()
+            return laplacian_var < threshold, float(laplacian_var)
         except Exception as e:
-            logging.error(f"Error en extractText: {str(e)}")
-            print(f"Error detectado: {e}")  # Para debug rápido en consola
-            return None
-        finally:
-            if processedImg is not None:
-                del processedImg
-            gc.collect()
+            logging.error("Error en isBlurry:", e)
+            return True, 0.0
+
+    def lowContrast(self, img, threshold=40):
+        contrast = img.max() - img.min()
+        return contrast < threshold, contrast
+
+    def exposureIssues(self, img, white_thresh=245, black_thresh=10):
+        total = img.size
+        white_pixels = np.sum(img > white_thresh)
+        black_pixels = np.sum(img < black_thresh)
+
+        white_ratio = white_pixels / total
+        black_ratio = black_pixels / total
+
+        return white_ratio > 0.6 or black_ratio > 0.6, white_ratio, black_ratio
+
+    def is_Bad_Image(self, grayscaleImg):
+        blurry, blur_score=self.isBlurry(grayscaleImg)
+        lowc, contrast = self.lowContrast(grayscaleImg)
+        exposure_bad, white_ratio, black_ratio = self.exposureIssues(grayscaleImg)
+        problems = sum([
+            blurry,
+            lowc,
+            exposure_bad
+        ])
+        return problems >= 2, {
+            "blur": blur_score,
+            "contrast": contrast,
+            "white_ratio": white_ratio,
+            "black_ratio": black_ratio
+        }
+
+
+
+    def aggresivePreprocessing(self, grayScaleImgInstance):
+
+        # adaptive threshold SOLO como fallback
+        thresh = cv2.adaptiveThreshold(
+            grayScaleImgInstance, 255,
+            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY,
+            31, 10
+        )
+        return thresh
+
+    def preProcessImg(self, path: str) -> (str,ImageInfo,str):
+        img = cv2.imread(path)
+        tmpPath = ""
+        imageProfile="default"
+        imageInfoInstance:ImageInfo=None
+        try:
+            if (img is None):
+                raise FileNotFoundError("No se puede leer el archivo")
+
+            imageInfoInstance=ImageInfo()
+            imageInfoInstance.originalHeight=img.shape[0]
+            imageInfoInstance.originalWidth=img.shape[1]
+
+            grayScaleImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            #self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale")
+
+            grayScaleImg=self.resizeImage(grayScaleImg)
+            imageInfoInstance.actualHeight=grayScaleImg.shape[0]
+            imageInfoInstance.actualWidth=grayScaleImg.shape[1]
+            #self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale and resized")
+
+            bad, metrics = self.is_Bad_Image(grayScaleImg)
+            print("Imagen mala:", bad)
+            print("Metricas de imagen:", metrics)
+            if bad:
+                imageProfile="aggresive"
+                grayScaleImg = self.aggresivePreprocessing(grayScaleImg)
+                #self._DebugUtil.renderStepWithImage(grayScaleImg, "Grayscale with aggresive fixes")
+            #clahe
+            claheInstance=cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+            grayScaleImg=claheInstance.apply(grayScaleImg)
+            #self._DebugUtil.renderStepWithImage(grayScaleImg, "CLAHE ")
+            denoisedImg = cv2.GaussianBlur(grayScaleImg, (3, 3), 0)
+            alpha = 1.2  # contraste
+            beta = 10  # brillo
+            adjusted = cv2.convertScaleAbs(denoisedImg, alpha=alpha, beta=beta)
+            #self._DebugUtil.renderStepWithImage(adjusted, "Adjusted")
+            #_, binarized = cv2.threshold(adjusted, 0, 200, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+            #self._DebugUtil.renderStepWithImage(binarized, "Otsu Binarized")
+            tmpPath = os.path.join(os.path.dirname(path),
+                                   os.path.splitext(os.path.basename(path))[0] + "_preProcessed.png")
+            cv2.imwrite(tmpPath, adjusted)
+        except RuntimeError as errData:
+            logging.error(errData)
+        return tmpPath,imageInfoInstance,imageProfile
+
+    def get_confidence_status(self, confidence: float) -> str:
+        if confidence < 0.6:
+            return "Error"
+        elif confidence < 0.8:
+            return "Warning"
+        return "Ok"
 
     def parseRawOcrData(self,
                         rawOcrData,

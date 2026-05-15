@@ -4,6 +4,7 @@ import type { OcrJobDto } from "./dto/OcrJobDto";
 
 export interface IDocumentsStoreModel extends BaseStateModel{
   pendingDocuments: Array<OcrDocumentDto>;
+   
   currentDocumentJobInfo:OcrJobDto;
   getPendingDocuments:( startDate: moment.Moment | null,endDate: moment.Moment | null)=>void;
   getJobInfoForDocument:(documentId:string)=>Promise<void>;

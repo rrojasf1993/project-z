@@ -24,11 +24,14 @@ import {
   Upload,
 } from "@mui/icons-material";
 import "./BaseComponent.css";
+const BaseComponent = () => {
+import "./BaseComponent.css";
 import NotificationPanel from "../cross/NotificationsPanel/NotificationPanel";
 const BaseComponent = () => 
 {
 
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
+
   const [notificationPanelAnchorElement, setNotificationPanelAnchorElement] = useState<HTMLElement | null>(null);
   
   const handleMenuClose = (): void => {

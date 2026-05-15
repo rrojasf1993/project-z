@@ -40,9 +40,8 @@ builder.Services.AddSingleton(mapperInstance);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IOcrService, OcrService>();
 builder.Services.AddTransient<IDocumentService, DocumentService>();
-builder.Services.AddTransient<IRuleService, RuleService>();
-
 builder.Services.AddSignalR();
+builder.Services.AddTransient<IRuleService, RuleService>();
 builder.Services.AddHostedService<PythonOcrWorker>();
 builder.Services.AddHostedService<DocumentFeatureExtractorWorker>();
 builder.Services.AddCors(options =>

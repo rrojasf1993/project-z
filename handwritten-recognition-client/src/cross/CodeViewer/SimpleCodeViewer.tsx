@@ -10,8 +10,8 @@ const SimpleCodeViewer = (props: SimpleCodeViewerProps) => {
             multiline
             fullWidth
             placeholder={props.text}
-            disabled={false}
-            variant="filled"
+            disabled={props.disabled}
+            variant="outlined"
             sx={{
               width: "620px",
               "& .MuiInputBase-input": {
