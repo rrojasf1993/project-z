@@ -82,12 +82,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     [field: AllowNull]
     [field: MaybeNull]
     public IGenericRepository<DocumentTypes> DocumentTypes=> field ??= new HandwritenRecognitionRepository<DocumentTypes>(_context);
-
-
-    [field: AllowNull]
-    [field: MaybeNull]
-    public IGenericRepository<OcrBoundingBox> BoundingBoxes=> field ??= new HandwritenRecognitionRepository<OcrBoundingBox>(context);
-
+    
 
     public Task<int> SaveChangesAsync()
     {

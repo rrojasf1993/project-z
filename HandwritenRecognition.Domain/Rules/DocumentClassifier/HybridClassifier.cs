@@ -18,8 +18,8 @@ public class HybridClassifier : IDocumentClassifier
     }
     public Task<string> ClassifyDocumentAsync(OcrDocumentDto document)
     {
-             
-            
+
+        throw new NotImplementedException();  
 
     }
 }
